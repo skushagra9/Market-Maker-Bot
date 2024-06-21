@@ -31,8 +31,6 @@ export const checkBalance = async (address: string) => {
     remainingBalance -= 40;
     count++;
   }
-
-  console.log(`Account ${address} can subtract 40: ${count} times`);
   return { count, remainingBalance };
 };
 

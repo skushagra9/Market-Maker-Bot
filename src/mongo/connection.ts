@@ -4,7 +4,7 @@ dotenv.config();
 class DbConnection {
   private static db: Db | null = null;
   private static instance: number = 0;
-  private static url: string = process.env.MONGO_URI as string;
+  private static url: string = process.env.MONGODB_URI as string;
 
   private static async DbConnect(): Promise<Db> {
     try {

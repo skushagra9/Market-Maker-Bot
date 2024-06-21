@@ -1,3 +1,4 @@
+import { saveToDb } from "./mongo/actions/saveOrders";
 export async function processOrders(priceChanges:any, isBuy:boolean, asset:string,  account:string, signature:string) {
   for (const changeKey of Object.keys(priceChanges)) {
     const changeValue = priceChanges[changeKey];
@@ -36,12 +37,10 @@ export async function processOrders(priceChanges:any, isBuy:boolean, asset:strin
 
       const data = await response.json();
       console.log(`${isBuy ? 'Buy' : 'Sell'} order created successfully:`, data);
-      // console.log(data.response.orders.orderId);
-            // console.log(data.response.orders);
       if (data.response.status === "ok") {
-        return data.response.orders
+          const {orderId, account, indexToken, isBuy, size, leverage} = data.response.orders
+          await saveToDb(orderId, account, indexToken, isBuy, size, leverage); 
       }
-      // orders.push({ id: data.response.orders.orderId, isBuy });
     } catch (error) {
       console.error(`Error creating ${isBuy ? 'buy' : 'sell'} order:`, error);
     }

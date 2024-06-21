@@ -4,7 +4,8 @@
   "main": "my.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx tsc && node dist/index.js"
+    "dev": "npx tsc && node dist/index.js",
+    "cancel": "npx tsc && node dist/scripts/cancel.js"
   },
   "keywords": [],
   "author": "",
