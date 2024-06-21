@@ -28,3 +28,4 @@ return prices.BTC
         console.error('Error fetching the crypto prices:', error);
     }
 }
+
