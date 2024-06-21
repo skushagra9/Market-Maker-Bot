@@ -18,6 +18,7 @@ const buySignature = process.env.BUY_SIGNATURE as string;
 const sellSignature = process.env.SELL_SIGNATURE as string;
 const assets = ["BTC", "ETH", "SOL"]
 let tasksCompleted = false;
+
 async function buy(asset:string) {
   try {
     const price = await getCryptoPrices(asset);
