@@ -37,8 +37,8 @@ export async function processOrders(priceChanges:any, isBuy:boolean, asset:strin
 
       const data = await response.json();
       console.log(`${isBuy ? 'Buy' : 'Sell'} order created successfully:`, data);
-      if (data.response.status === "ok") {
-          const {orderId, account, indexToken, isBuy, size, leverage} = data.response.orders
+      if (data.status === "ok") {
+           const {orderId, account, indexToken, isBuy, size, leverage} = data.response.orders
           await saveToDb(orderId, account, indexToken, isBuy, size, leverage); 
       }
     } catch (error) {

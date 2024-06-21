@@ -46,11 +46,13 @@ export const cancelOrdersBatch = async () => {
         const { orderId, isBuy, account, signature } = order;
         return cancelPayload(
           orderId,
-          isBuy,
-          isBuy ? account : undefined,
-          isBuy ? signature : undefined,
-          !isBuy ? account : undefined,
-          !isBuy ? signature : undefined
+          // isBuy,
+          account,
+          signature
+          // isBuy ? account : undefined,
+          // isBuy ? signature : undefined,
+          // !isBuy ? account : undefined,
+          // !isBuy ? signature : undefined
         );
       })
     );
