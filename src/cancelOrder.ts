@@ -19,6 +19,6 @@ export const cancelPayload = async (orderId:string, account?:string, signature?:
   if (data.status === "notOk"){
     console.log("OrderFailed",data.response.canceledOrders)
   }else{
-    console.log("Successfully Cancelled", data.response.canceledOrders)
+    console.log("Successfully Cancelled")
   }
 };
