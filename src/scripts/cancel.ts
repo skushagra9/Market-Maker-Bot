@@ -42,10 +42,10 @@ export const cancelOrdersBatch = async () => {
   await Promise.all(cancelPromises.flat());
   console.log('All cancel requests completed');
 };
-(async () => {
-  setInterval(async () => {
-    await cancelOrdersBatch();
-  }, 6 * 60 * 1000);
-})();
+// (async () => {
+//   setInterval(async () => {
+//     await cancelOrdersBatch();
+//   }, 6 * 60 * 1000);
+// })();
 
 cancelOrdersBatch()

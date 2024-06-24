@@ -57,13 +57,13 @@ const main = async (asset: string) => {
 
     await removeClosedOrdersFromDb([...buyClosedOrders, ...sellClosedOrders]);
 
-    if (buyCount >= 5) {
-      await buy(asset);
-      await sell(asset);
+    // if (buyCount >= 5) {
+    await buy(asset);
+    await sell(asset);
 
-    } else {
-      console.log('Not enough collateral to place 5 trades on both buy and sell sides');
-    }
+    // } else {
+    //   console.log('Not enough collateral to place 5 trades on both buy and sell sides');
+    // }
     console.log(buyOpenOrders, sellOpenOrders)
     for (const order of buyOpenOrders) {
       await cancelPayload(order, buyAccount, buySignature);
