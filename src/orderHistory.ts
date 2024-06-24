@@ -14,8 +14,15 @@
 // };
 import axios from "axios";
 
-export const getClosedOrders = async (address: string) => {
-  const response = await axios.get(`https://orderbook.filament.finance/test/api/v1/orders/closed-orders/account/${address.toLowerCase()}`);
+export const getClosedOrders = async (address: string, side: string, token: string) => {
+  const response = await axios.get(`https://orderbook.filament.finance/test/api/v1/orders/closed-orders/account/${address.toLowerCase()}`,
+    {
+      params: {
+        side: side,
+        token: token
+      }
+    }
+  );
   const orders = response.data;
 
   const matchedOrders = orders.filter((order: any) => order.orderStatus === 'MATCHED');
