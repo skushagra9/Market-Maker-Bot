@@ -14,21 +14,7 @@ export const fetchOpenOrders = async (indexToken: string) => {
   const orders = await response.json();
   return orders;
 };
-//cancel for individual token
-// export const cancelOrdersBatch = async (indexToken: string) => {
-//
-//   const orders = await fetchOpenOrders(indexToken);
-//   const ordersToCancel = orders.map((order:any) => ({
-//     orderId: order.orderId,
-//     isBuy: order.isLong === 'BUY',
-//     account: order.account,
-//     signature: order.signature,
-//   }));
-//   const cancelPromises = ordersToCancel.map((order:any) =>
-//     cancelPayload(order.orderId, order.isBuy, order.account, order.signature)
-//   );
-//   await Promise.all(cancelPromises);
-// };
+
 export const cancelOrdersBatch = async () => {
   const cancelPromises = Object.keys(IndexTokenAddress).map(async (indexToken: string) => {
     const orders = await fetchOpenOrders(IndexTokenAddress[indexToken]);
@@ -53,13 +39,13 @@ export const cancelOrdersBatch = async () => {
     );
   });
   //
-  // await Promise.all(cancelPromises.flat());
+  await Promise.all(cancelPromises.flat());
   console.log('All cancel requests completed');
 };
 (async () => {
   setInterval(async () => {
     await cancelOrdersBatch();
-  }, 6 * 60 * 1000); // 20000 milliseconds = 20 seconds
+  }, 6 * 60 * 1000);
 })();
 
 cancelOrdersBatch()
