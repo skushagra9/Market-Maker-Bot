@@ -48,13 +48,13 @@ const main = async (asset: string) => {
     const { count: sellCount, remainingBalance: sellRemainingBalance } = await checkBalance(sellAccount);
     console.log(`SELL_ACCOUNT can place orders for $40: ${sellCount} times, remaining balance after placing all of the orders: ${sellRemainingBalance}`);
 
-    // const buyOpenOrders = await getOpenOrders(buyAccount, "BUY", asset);
-    // const buyClosedOrders = await getClosedOrders(buyAccount, "BUY", asset);
-    //
-    // const sellOpenOrders = await getOpenOrders(sellAccount, "SELL", asset);
-    // const sellClosedOrders = await getClosedOrders(sellAccount, "SELL", asset);
+    const buyOpenOrders = await getOpenOrders(buyAccount, "BUY", asset);
+    const buyClosedOrders = await getClosedOrders(buyAccount, "BUY", asset);
 
-    // await removeClosedOrdersFromDb([...buyClosedOrders, ...sellClosedOrders]);
+    const sellOpenOrders = await getOpenOrders(sellAccount, "SELL", asset);
+    const sellClosedOrders = await getClosedOrders(sellAccount, "SELL", asset);
+
+    await removeClosedOrdersFromDb([...buyClosedOrders, ...sellClosedOrders]);
 
     if (buyCount >= 5 && sellCount >= 5) {
       await buy(asset);
@@ -63,14 +63,14 @@ const main = async (asset: string) => {
     } else {
       console.log('Not enough collateral to place 5 trades on both buy and sell sides');
     }
-    // console.log(buyOpenOrders, sellOpenOrders)
-    // for (const order of buyOpenOrders) {
-    //   await cancelPayload(order, buyAccount, buySignature);
-    // }
-    //
-    // for (const order of sellOpenOrders) {
-    //   await cancelPayload(order, sellAccount, sellSignature);
-    // }
+    console.log(buyOpenOrders, sellOpenOrders)
+    for (const order of buyOpenOrders) {
+      await cancelPayload(order, buyAccount, buySignature);
+    }
+
+    for (const order of sellOpenOrders) {
+      await cancelPayload(order, sellAccount, sellSignature);
+    }
 
     let db = await DbConnection.Get();
     await db.collection('orders').deleteMany({});
@@ -131,32 +131,32 @@ const main = async (asset: string) => {
 //   setInterval(checkPriceChanges, 60000);
 // }
 // startMonitoring();
-if (cluster.isPrimary) {
-  const numWorkers = Math.min(os.cpus().length, assets.length);
-
-  console.log(`Primary cluster setting up ${numWorkers} workers...`);
-
-  assets.forEach((asset) => {
-    const worker = cluster.fork();
-    worker.send({ asset });
-  });
-
-  cluster.on('online', function (worker) {
-    console.log(`Worker ${worker.process.pid} is online`);
-  });
-
-  cluster.on('exit', function (worker, code, signal) {
-    console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
-    if (!tasksCompleted && code !== 0 && assets.length > 0) {
-      console.log('Starting a new worker');
-      const newWorker = cluster.fork();
-      newWorker.send({ asset: assets.pop() });
-    }
-  });
-} else {
-  process.on('message', async function (message: any) {
-    await main(message.asset);
-  });
-}
+// if (cluster.isPrimary) {
+//   const numWorkers = Math.min(os.cpus().length, assets.length);
 //
-// main("ETH")
+//   console.log(`Primary cluster setting up ${numWorkers} workers...`);
+//
+//   assets.forEach((asset) => {
+//     const worker = cluster.fork();
+//     worker.send({ asset });
+//   });
+//
+//   cluster.on('online', function (worker) {
+//     console.log(`Worker ${worker.process.pid} is online`);
+//   });
+//
+//   cluster.on('exit', function (worker, code, signal) {
+//     console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
+//     if (!tasksCompleted && code !== 0 && assets.length > 0) {
+//       console.log('Starting a new worker');
+//       const newWorker = cluster.fork();
+//       newWorker.send({ asset: assets.pop() });
+//     }
+//   });
+// } else {
+//   process.on('message', async function (message: any) {
+//     await main(message.asset);
+//   });
+// }
+//
+main("BTC")
