@@ -82,81 +82,81 @@ const main = async (asset: string) => {
   }
 };
 
-// async function checkPriceChanges() {
-//   let initialPrices = <any>{};
-//   for (let asset of assets) {
-//     const currentPrice = await getMarkPrice(asset);
-//     if (initialPrices[asset] !== undefined) {
-//       const priceChange = Math.abs((currentPrice - initialPrices[asset]) / initialPrices[asset]) * 100;
-//       if (priceChange > 2) {
-//         console.log(`Price change for ${asset} is more than 2%: ${priceChange}%`);
-//         initialPrices[asset] = currentPrice;
-//         setupCluster(asset);
-//       }
-//     } else {
-//       initialPrices[asset] = currentPrice;
-//     }
-//   }
-// }
-//
-// function setupCluster(asset: string) {
-//   if (cluster.isPrimary) {
-//     const numWorkers = Math.min(os.cpus().length, assets.length);
-//
-//     console.log(`Primary cluster setting up ${numWorkers} workers...`);
-//
-//     const worker = cluster.fork();
-//     worker.send({ asset });
-//
-//     cluster.on('online', function (worker) {
-//       console.log(`Worker ${worker.process.pid} is online`);
-//     });
-//
-//     cluster.on('exit', function (worker, code, signal) {
-//       console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
-//       if (code !== 0 && assets.length > 0) {
-//         console.log('Starting a new worker');
-//         const newWorker = cluster.fork();
-//         newWorker.send({ asset });
-//       }
-//     });
-//   } else {
-//     process.on('message', async function (message: any) {
-//       await main(message.asset);
-//     });
-//   }
-// }
-//
-// function startMonitoring() {
-//   setInterval(checkPriceChanges, 60000);
-// }
-// startMonitoring();
-if (cluster.isPrimary) {
-  const numWorkers = Math.min(os.cpus().length, assets.length);
+async function checkPriceChanges() {
+  let initialPrices = <any>{};
+  for (let asset of assets) {
+    const currentPrice = await getMarkPrice(asset);
+    if (initialPrices[asset] !== undefined) {
+      const priceChange = Math.abs((currentPrice - initialPrices[asset]) / initialPrices[asset]) * 100;
+      if (priceChange > 2) {
+        console.log(`Price change for ${asset} is more than 2%: ${priceChange}%`);
+        initialPrices[asset] = currentPrice;
+        setupCluster(asset);
+      }
+    } else {
+      initialPrices[asset] = currentPrice;
+    }
+  }
+}
 
-  console.log(`Primary cluster setting up ${numWorkers} workers...`);
+function setupCluster(asset: string) {
+  if (cluster.isPrimary) {
+    const numWorkers = Math.min(os.cpus().length, assets.length);
 
-  assets.forEach((asset) => {
+    console.log(`Primary cluster setting up ${numWorkers} workers...`);
+
     const worker = cluster.fork();
     worker.send({ asset });
-  });
 
-  cluster.on('online', function (worker) {
-    console.log(`Worker ${worker.process.pid} is online`);
-  });
+    cluster.on('online', function (worker) {
+      console.log(`Worker ${worker.process.pid} is online`);
+    });
 
-  cluster.on('exit', function (worker, code, signal) {
-    console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
-    if (!tasksCompleted && code !== 0 && assets.length > 0) {
-      console.log('Starting a new worker');
-      const newWorker = cluster.fork();
-      newWorker.send({ asset: assets.pop() });
-    }
-  });
-} else {
-  process.on('message', async function (message: any) {
-    await main(message.asset);
-  });
+    cluster.on('exit', function (worker, code, signal) {
+      console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
+      if (code !== 0 && assets.length > 0) {
+        console.log('Starting a new worker');
+        const newWorker = cluster.fork();
+        newWorker.send({ asset });
+      }
+    });
+  } else {
+    process.on('message', async function (message: any) {
+      await main(message.asset);
+    });
+  }
 }
+
+function startMonitoring() {
+  setInterval(checkPriceChanges, 60000);
+}
+startMonitoring();
+// if (cluster.isPrimary) {
+//   const numWorkers = Math.min(os.cpus().length, assets.length);
+//
+//   console.log(`Primary cluster setting up ${numWorkers} workers...`);
+//
+//   assets.forEach((asset) => {
+//     const worker = cluster.fork();
+//     worker.send({ asset });
+//   });
+//
+//   cluster.on('online', function (worker) {
+//     console.log(`Worker ${worker.process.pid} is online`);
+//   });
+//
+//   cluster.on('exit', function (worker, code, signal) {
+//     console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
+//     if (!tasksCompleted && code !== 0 && assets.length > 0) {
+//       console.log('Starting a new worker');
+//       const newWorker = cluster.fork();
+//       newWorker.send({ asset: assets.pop() });
+//     }
+//   });
+// } else {
+//   process.on('message', async function (message: any) {
+//     await main(message.asset);
+//   });
+// }
 
 // main("BTC")
