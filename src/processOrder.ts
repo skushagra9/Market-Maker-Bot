@@ -41,7 +41,7 @@ export async function processOrders(priceChanges: any, isBuy: boolean, asset: st
         const { orderId, account, indexToken, isBuy, size, leverage } = data.response.orders
         await saveToDb(orderId, account, indexToken, isBuy, size, leverage);
       } else {
-        console.log("Order Creation Failed", data.response.orders)
+        console.log("Order Creation Failed", data.response.orders[0].orderId)
       }
     } catch (error) {
       console.error(`Error creating ${isBuy ? 'buy' : 'sell'} order:`, error);

@@ -1,13 +1,13 @@
 
-export const cancelPayload = async (orderId:string, account?:string, signature?:string) => {
-    const cancel = {
-      type: 'cancel',
-      cancels: [{
-        account: account,
-        orderId,
-      }],
-      signature: signature,
-    };
+export const cancelPayload = async (orderId: string, account?: string, signature?: string) => {
+  const cancel = {
+    type: 'cancel',
+    cancels: [{
+      account: account?.toLowerCase(),
+      orderId,
+    }],
+    signature: signature,
+  };
   const response = await fetch('https://orderbook.filament.finance/test/filament/api/v1/exchange', {
     method: 'POST',
     headers: {
@@ -16,9 +16,9 @@ export const cancelPayload = async (orderId:string, account?:string, signature?:
     body: JSON.stringify(cancel),
   });
   const data = await response.json();
-  if (data.status === "notOk"){
-    console.log("OrderFailed",data.response.canceledOrders)
-  }else{
+  if (data.status === "notOk") {
+    console.log("OrderFailed", data.response.canceledOrders)
+  } else {
     console.log("Successfully Cancelled")
   }
 };

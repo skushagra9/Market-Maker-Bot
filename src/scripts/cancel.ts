@@ -1,4 +1,5 @@
 import { cancelPayload } from "../cancelOrder";
+
 export const IndexTokenAddress: IndexTokenAddressType = {
   SOL: "0x7dff46370e9ea5f0bad3c4e29711ad50062ea7a4",
   ETH: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
@@ -21,25 +22,24 @@ export const cancelOrdersBatch = async () => {
     console.log(`Fetched all of the open orders of ${indexToken}`);
     const ordersToCancel = orders.map((order: any) => ({
       orderId: order.orderId,
-      isBuy: order.isLong === 'BUY',
       account: order.account,
       signature: order.signature,
     }));
     const ordersToCancelLength = ordersToCancel.length;
     console.log(ordersToCancelLength);
-    return Promise.all(
-      ordersToCancel.map((order: any) => {
-        const { orderId, isBuy, account, signature } = order;
-        return cancelPayload(
-          orderId,
-          account,
-          signature
-        );
-      })
-    );
+    // return Promise.all(
+    //   ordersToCancel.map((order: any) => {
+    //     const { orderId, account, signature } = order;
+    //     return cancelPayload(
+    //       orderId,
+    //       account,
+    //       signature
+    //     );
+    //   })
+    // );
   });
   //
-  await Promise.all(cancelPromises.flat());
+  // await Promise.all(cancelPromises.flat());
   console.log('All cancel requests completed');
 };
 // (async () => {
@@ -49,3 +49,6 @@ export const cancelOrdersBatch = async () => {
 // })();
 
 // cancelOrdersBatch()
+
+
+
