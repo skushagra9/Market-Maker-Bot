@@ -42,7 +42,7 @@ jobs:
       - name: Pull latest changes and restart application
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/filament.pem ubuntu@ec2-54-221-5-129.compute-1.amazonaws.com << 'EOF'
-            cd /Market-Maker-Bot
+            cd Market-Maker-Bot
             git pull 
             npm install
             npm run dev
