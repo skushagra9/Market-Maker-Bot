@@ -131,32 +131,32 @@ const main = async (asset: string) => {
 //   setInterval(checkPriceChanges, 60000);
 // }
 // startMonitoring();
-// if (cluster.isPrimary) {
-//   const numWorkers = Math.min(os.cpus().length, assets.length);
-//
-//   console.log(`Primary cluster setting up ${numWorkers} workers...`);
-//
-//   assets.forEach((asset) => {
-//     const worker = cluster.fork();
-//     worker.send({ asset });
-//   });
-//
-//   cluster.on('online', function (worker) {
-//     console.log(`Worker ${worker.process.pid} is online`);
-//   });
-//
-//   cluster.on('exit', function (worker, code, signal) {
-//     console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
-//     if (!tasksCompleted && code !== 0 && assets.length > 0) {
-//       console.log('Starting a new worker');
-//       const newWorker = cluster.fork();
-//       newWorker.send({ asset: assets.pop() });
-//     }
-//   });
-// } else {
-//   process.on('message', async function (message: any) {
-//     await main(message.asset);
-//   });
-// }
-//
-main("BTC")
+if (cluster.isPrimary) {
+  const numWorkers = Math.min(os.cpus().length, assets.length);
+
+  console.log(`Primary cluster setting up ${numWorkers} workers...`);
+
+  assets.forEach((asset) => {
+    const worker = cluster.fork();
+    worker.send({ asset });
+  });
+
+  cluster.on('online', function (worker) {
+    console.log(`Worker ${worker.process.pid} is online`);
+  });
+
+  cluster.on('exit', function (worker, code, signal) {
+    console.log(`Worker ${worker.process.pid} exited with code: ${code}, and signal: ${signal}`);
+    if (!tasksCompleted && code !== 0 && assets.length > 0) {
+      console.log('Starting a new worker');
+      const newWorker = cluster.fork();
+      newWorker.send({ asset: assets.pop() });
+    }
+  });
+} else {
+  process.on('message', async function (message: any) {
+    await main(message.asset);
+  });
+}
+
+// main("ETH")

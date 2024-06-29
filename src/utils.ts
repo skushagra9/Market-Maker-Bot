@@ -1,5 +1,5 @@
 export function calculatePriceChangesbuy(price: number) {
-  const dollarDecreases = Array.from({ length: 5 }, (_, i) => i + 1);
+  const dollarDecreases = Array.from({ length: 18 }, (_, i) => i + 1);
   const priceChanges: { [key: string]: string } = {};
   dollarDecreases.forEach((decrease) => {
     const changeKey = `minus_${decrease}_dollar`;
@@ -10,7 +10,7 @@ export function calculatePriceChangesbuy(price: number) {
 }
 
 export function calculatePriceChangesSell(price: number) {
-  const dollarIncreases = Array.from({ length: 5 }, (_, i) => i + 1);
+  const dollarIncreases = Array.from({ length: 18 }, (_, i) => i + 1);
   const priceChanges: { [key: string]: string } = {};
   dollarIncreases.forEach((increase) => {
     const changeKey = `plus_${increase}_dollar`;

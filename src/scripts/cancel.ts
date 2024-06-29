@@ -27,19 +27,19 @@ export const cancelOrdersBatch = async () => {
     }));
     const ordersToCancelLength = ordersToCancel.length;
     console.log(ordersToCancelLength);
-    // return Promise.all(
-    //   ordersToCancel.map((order: any) => {
-    //     const { orderId, account, signature } = order;
-    //     return cancelPayload(
-    //       orderId,
-    //       account,
-    //       signature
-    //     );
-    //   })
-    // );
+    return Promise.all(
+      ordersToCancel.map((order: any) => {
+        const { orderId, account, signature } = order;
+        return cancelPayload(
+          orderId,
+          account,
+          signature
+        );
+      })
+    );
   });
-  //
-  // await Promise.all(cancelPromises.flat());
+
+  await Promise.all(cancelPromises.flat());
   console.log('All cancel requests completed');
 };
 // (async () => {
