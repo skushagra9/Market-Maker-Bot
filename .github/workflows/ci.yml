@@ -37,6 +37,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/filament.pem
           chmod 600 ~/.ssh/filament.pem
+          ls -l ~/.ssh/filament.pem
 
       - name: Pull latest changes and restart application
         run: |
